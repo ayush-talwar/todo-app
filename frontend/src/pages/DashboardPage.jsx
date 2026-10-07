@@ -1,12 +1,16 @@
-import { useAuth } from '../context/AuthContext';
+import NavBar from '../components/NavBar';
+import TaskList from '../components/TaskList';
 
 export default function DashboardPage() {
-  const { logout } = useAuth();
 
   return (
-    <>
-    <h2>Welcome to the Dashboard</h2>
-    <button onClick={logout}>Logout</button>
-    </>
+   <div>
+    <div style={{ backgroundColor: '##5d6060' }}>
+    <NavBar />
+    </div>
+    <div>
+    <TaskList />
+    </div>
+   </div>
   );
 };

@@ -1,0 +1,8 @@
+.logout-button {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
