@@ -83,7 +83,7 @@ export default function TaskList() {
                        task = { task }
                        onToggleStatus = { handleToggleStatus }
                         onDelete = { handleDelete }
-                        onEdit = { setEditingTask }
+                        onEdit = { handleAddOrUpdate }
                        /> 
                     ))
                 )
