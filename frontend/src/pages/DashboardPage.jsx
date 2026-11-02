@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { getTasks, createTask, updateTask, deleteTask } from '../api/tasks';
 import TaskForm from '../components/TaskForm';
 import TaskItem from '../components/TaskItem';
@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reloadKey, setReloadKey] = useState(0); // Key to force re-render
   const [filters, setFilters] = useState({
     status: '',
     priority: '',
@@ -20,34 +21,38 @@ export default function DashboardPage() {
     ordering: ''
   });
 
-  const fetchTasks = async () => {
-    setLoading(true);
+ useEffect(() => {
+  let ignore = false;
+  async function load() {
     try{
       const response = await getTasks(filters);
-      setTasks(response.data);
-    } catch (error) {
-      setError(getErrorMessage(error, 'Could not load tasks.'));
-    } finally {
-      setLoading(false);
+      if (!ignore) {
+        setTasks(response.data);
+        setError('');
+      }
+     } catch (err) {
+        if (!ignore) setError(getErrorMessage(err, 'Could not load tasks.'));
+      } finally {
+        if (!ignore) setLoading(false);
+      }
     }
-  };
+  load();
+  return () => {
+    ignore = true;
+  }
+ }, [filters, reloadKey]);
 
   const runAction = async (action) => {
     setError('');
     try{
       await action();
-      await fetchTasks();
+      setReloadKey(prevKey => prevKey + 1); // Trigger re-render to reload tasks
       return true;
     } catch (error) {
       setError(getErrorMessage(error));
       return false;
     }
   };
-
-  // Re-fetch whenever the filter changes
-  useEffect(() => {
-    fetchTasks();
-  }, [filters]);
 
   const handleAddOrUpdate = (formData) => 
     runAction(async () => {
