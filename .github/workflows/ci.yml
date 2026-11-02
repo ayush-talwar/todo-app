@@ -46,7 +46,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python manage.py check
       - run: python manage.py makemigrations --check --dry-run
-      - run: pytest --cov=tasks --cov=users
+      - run: pytest
   frontend:
     runs-on: ubuntu-latest
     defaults:

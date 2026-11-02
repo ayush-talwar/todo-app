@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { card, input, btnPrimary } from '../ui';
+import { card, input } from '../ui';
 import { getErrorMessage } from '../utils/errors';
 
 export default function RegisterPage() {

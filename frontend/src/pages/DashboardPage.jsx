@@ -5,7 +5,6 @@ import TaskForm from '../components/TaskForm';
 import TaskItem from '../components/TaskItem';
 import TaskFilters from '../components/TaskFilters';
 import { getErrorMessage } from '../utils/errors';
-import { AiOutlineLogout } from "react-icons/ai";
 import { btnGhost } from '../ui';
 
 export default function DashboardPage() {
