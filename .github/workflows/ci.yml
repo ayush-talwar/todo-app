@@ -82,9 +82,12 @@ jobs:
             http://localhost:8000/admin/login/
       - name: Smoke test the API
         run: |
-          curl -f -X POST http://localhost:8000/api/register -H 'Content-Type: application/json' -d '{"username":"smoketest","password":"smoketest123","email":"s@abc.com"}'
-          curl -f -X POST http://localhost:8000/api/token/ -H 'Content-Type: application/json' -d '{"username":"smoketest","password":"smoketest123"}
-          '
+          curl -f --fail-with-body -X POST http://localhost:8000/api/register/ \
+            -H 'Content-Type: application/json' \
+            -d '{"username":"smoketest","password":"smoketest123","email":"s@abc.com"}'
+          curl -f --fail-with-body -X POST http://localhost:8000/api/token/ \
+            -H 'Content-Type: application/json' \
+            -d '{"username":"smoketest","password":"smoketest123"}'
       - name: Smoke test the frontend
         run: |
           curl -f http://localhost:8080/
