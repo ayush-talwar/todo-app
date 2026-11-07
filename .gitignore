@@ -34,3 +34,6 @@ media/
 Thumbs.db
 .vscode/
 .idea/
+
+# others
+.opencode/
