@@ -78,7 +78,8 @@ jobs:
         run: docker compose up -d --build
       - name: Wait for backend
         run: |
-            curl -f --retry 30 --retry-delay 2 --retry-connrefused http://localhost:8000/admin/login/
+            curl -f --retry 30 --retry-delay 2 --retry-all-errors \
+            http://localhost:8000/admin/login/
       - name: Smoke test the API
         run: |
           curl -f -X POST http://localhost:8000/api/register -H 'Content-Type: application/json' -d '{"username":"smoketest","password":"smoketest123","email":"s@abc.com"}'
