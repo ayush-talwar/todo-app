@@ -98,3 +98,36 @@ jobs:
       - name: Tear down the stack
         if: always()
         run: docker compose down
+  publish:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, docker]
+    if github.event == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: work out image names and tags
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          echo "BACKEND_IMAGE=ghcr.io/${owner}/todo-backend" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE=ghcr.io/${owner}/todo-frontend" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - name: Log in to GitHub Container Registry
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Build and push backend
+        run: |
+          docker build \
+          --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+          -t "$BACKEND_IMAGE:latest" -t "$BACKEND_IMAGE:$SHORT_SHA" \
+          ./backend
+          docker push --all-tags "$BACKEND_IMAGE"
+      - name: Build and push frontend
+        run: |
+          docker build \
+          --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+          -t "$FRONTEND_IMAGE:latest" -t "$FRONTEND_IMAGE:$SHORT_SHA" \
+          ./frontend
+          docker push --all-tags "$FRONTEND_IMAGE"
